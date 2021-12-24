@@ -28,6 +28,7 @@ code {
   background: -webkit-linear-gradient(left, #ff8867, #ff52ff);
   background-size: 200% 200%;
   animation: gradient-animation 4s ease infinite;
+  position: absolute;
 }
 
 .mint-button {
@@ -57,4 +58,31 @@ code {
   font-size: 16px;
   font-weight: bold;
   color: white;
+}
+
+.bg {
+  background-image: url("./assets/piratebg.png");
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100vh;
+  background-size:cover;
+}
+
+.frame {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  border: dashed;
+  height: 50%;
+  width: 90%;
+  margin: auto;
+  background-color:rgba(255,255,255,0.5);
+  font-weight: bold;
+  color: black;
+}
+
+@media only screen and (max-width: 600px) {
+  .frame {
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
 }

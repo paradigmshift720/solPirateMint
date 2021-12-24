@@ -167,62 +167,66 @@ const Home = (props: HomeProps) => {
 
   return (
     <main>
-      <div className='mintContainer'>
-      {wallet && (
-        <p>Wallet {shortenAddress(wallet.publicKey.toBase58() || "")}</p>
-      )}
-
-      {wallet && <p>Balance: {(balance || 0).toLocaleString()} SOL</p>}
-
-      {wallet && <p>Total Available: {itemsAvailable}</p>}
-
-      {wallet && <p>Redeemed: {itemsRedeemed}</p>}
-
-      {wallet && <p>Remaining: {itemsRemaining}</p>}
-
-      <MintContainer>
-        {!wallet ? (
-          <ConnectButton className="connect-wallet-button">Connect Wallet</ConnectButton>
-        ) : (
-          <MintButton
-            className="mint-button"
-            disabled={isSoldOut || isMinting || !isActive}
-            onClick={onMint}
-            variant="contained"
-          >
-            {isSoldOut ? (
-              "SOLD OUT"
-            ) : isActive ? (
-              isMinting ? (
-                <CircularProgress />
-              ) : (
-                "MINT a SolPirate"
-              )
-            ) : (
-              <Countdown
-                date={startDate}
-                onMount={({ completed }) => completed && setIsActive(true)}
-                onComplete={() => setIsActive(true)}
-                renderer={renderCounter}
-              />
-            )}
-          </MintButton>
+      <div className="bg">
+        <div className='frame'>
+        <div className='mintContainer'>
+        {wallet && (
+          <p>Wallet {shortenAddress(wallet.publicKey.toBase58() || "")}</p>
         )}
-      </MintContainer>
 
-      <Snackbar
-        open={alertState.open}
-        autoHideDuration={6000}
-        onClose={() => setAlertState({ ...alertState, open: false })}
-      >
-        <Alert
+        {wallet && <p>Balance: {(balance || 0).toLocaleString()} SOL</p>}
+
+        {wallet && <p>Total Available: {itemsAvailable}</p>}
+
+        {wallet && <p>Redeemed: {itemsRedeemed}</p>}
+
+        {wallet && <p>Remaining: {itemsRemaining}</p>}
+
+        <MintContainer>
+          {!wallet ? (
+            <ConnectButton className="connect-wallet-button">Connect Wallet</ConnectButton>
+          ) : (
+            <MintButton
+              className="mint-button"
+              disabled={isSoldOut || isMinting || !isActive}
+              onClick={onMint}
+              variant="contained"
+            >
+              {isSoldOut ? (
+                "SOLD OUT"
+              ) : isActive ? (
+                isMinting ? (
+                  <CircularProgress />
+                ) : (
+                  "MINT a SolPirate"
+                )
+              ) : (
+                <Countdown
+                  date={startDate}
+                  onMount={({ completed }) => completed && setIsActive(true)}
+                  onComplete={() => setIsActive(true)}
+                  renderer={renderCounter}
+                />
+              )}
+            </MintButton>
+          )}
+        </MintContainer>
+
+        <Snackbar
+          open={alertState.open}
+          autoHideDuration={6000}
           onClose={() => setAlertState({ ...alertState, open: false })}
-          severity={alertState.severity}
         >
-          {alertState.message}
-        </Alert>
-      </Snackbar>
-      </div> 
+          <Alert
+            onClose={() => setAlertState({ ...alertState, open: false })}
+            severity={alertState.severity}
+          >
+            {alertState.message}
+          </Alert>
+        </Snackbar>
+        </div> 
+        </div>
+      </div>
     </main>
   );
 };
