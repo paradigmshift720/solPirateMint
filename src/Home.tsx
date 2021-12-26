@@ -184,6 +184,8 @@ const Home = (props: HomeProps) => {
 
         {wallet && <p>Remaining: {itemsRemaining}</p>}
 
+        {wallet && <p>Mint Price: 0.35 SOL</p>}
+
         <MintContainer>
           {!wallet ? (
             <ConnectButton className="connect-wallet-button">Connect Wallet</ConnectButton>
