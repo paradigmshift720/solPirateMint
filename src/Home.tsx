@@ -168,6 +168,8 @@ const Home = (props: HomeProps) => {
   return (
     <main>
       <div className="bg">
+      {/* <audio src="./assets/song.mp3" autoPlay></audio> */}
+      {/* <embed name="GoodEnough" src="./assets/song.mp3" loop="false" autostart="true"></embed> */}
         <div className='frame'>
         <div className='mintContainer'>
         {wallet && (
