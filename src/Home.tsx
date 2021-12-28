@@ -172,48 +172,10 @@ const Home = (props: HomeProps) => {
       {/* <embed name="GoodEnough" src="./assets/song.mp3" loop="false" autostart="true"></embed> */}
         <div className='frame'>
         <div className='mintContainer'>
-        {wallet && (
-          <p>Wallet {shortenAddress(wallet.publicKey.toBase58() || "")}</p>
-        )}
-
-        {wallet && <p>Balance: {(balance || 0).toLocaleString()} SOL</p>}
-
-        {wallet && <p>Total Available: {itemsAvailable}</p>}
-
-        {wallet && <p>Redeemed: {itemsRedeemed}</p>}
-
-        {wallet && <p>Remaining: {itemsRemaining}</p>}
-
-        {wallet && <p>Mint Price: 0.35 SOL</p>}
-
+          <p>Mint opens January 5th 12 AM UTC</p>
+        
         <MintContainer>
-          {!wallet ? (
-            <ConnectButton className="connect-wallet-button">Connect Wallet</ConnectButton>
-          ) : (
-            <MintButton
-              className="mint-button"
-              disabled={isSoldOut || isMinting || !isActive}
-              onClick={onMint}
-              variant="contained"
-            >
-              {isSoldOut ? (
-                "SOLD OUT"
-              ) : isActive ? (
-                isMinting ? (
-                  <CircularProgress />
-                ) : (
-                  "MINT a SolPirate"
-                )
-              ) : (
-                <Countdown
-                  date={startDate}
-                  onMount={({ completed }) => completed && setIsActive(true)}
-                  onComplete={() => setIsActive(true)}
-                  renderer={renderCounter}
-                />
-              )}
-            </MintButton>
-          )}
+          
         </MintContainer>
 
         <Snackbar
