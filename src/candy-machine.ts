@@ -6,6 +6,11 @@ import {
   Token,
 } from "@solana/spl-token";
 
+import { programs } from '@metaplex/js';
+const {
+  metadata: { Metadata, MetadataProgram },
+} = programs;
+
 export const CANDY_MACHINE_PROGRAM = new anchor.web3.PublicKey(
   "cndyAnrLdpjq1Ssp1z8xxDsB8dxe7u4HL5Nxi2K5WXZ"
 );
@@ -30,6 +35,7 @@ interface CandyMachineState {
   itemsRedeemed: number;
   itemsRemaining: number;
   goLiveDate: Date,
+  mints: any[] | undefined
 }
 
 export const awaitTransactionSignatureConfirmation = async (
@@ -151,6 +157,58 @@ export const awaitTransactionSignatureConfirmation = async (
   });
 }
 
+const MAX_NAME_LENGTH = 32;
+const MAX_URI_LENGTH = 200;
+const MAX_SYMBOL_LENGTH = 10;
+const MAX_CREATOR_LEN = 32 + 1 + 1;
+const fetchHashTable = async (hash: any, metadataEnabled: any) => {
+  const connection = new anchor.web3.Connection(
+    process.env.REACT_APP_SOLANA_RPC_HOST || ''
+  );
+
+  const metadataAccounts = await MetadataProgram.getProgramAccounts(
+    connection,
+    {
+      filters: [
+        {
+          memcmp: {
+            offset:
+              1 +
+              32 +
+              32 +
+              4 +
+              MAX_NAME_LENGTH +
+              4 +
+              MAX_URI_LENGTH +
+              4 +
+              MAX_SYMBOL_LENGTH +
+              2 +
+              1 +
+              4 +
+              0 * MAX_CREATOR_LEN,
+            bytes: hash,
+          },
+        },
+      ],
+    }
+  );
+
+  const mintHashes = [];
+
+  for (let index = 0; index < metadataAccounts.length; index++) {
+    const account = metadataAccounts[index];
+    const accountInfo = await connection.getParsedAccountInfo(account.pubkey);
+    const metadata = new Metadata(hash.toString(), accountInfo.value as any);
+    if (metadataEnabled) mintHashes.push(metadata.data);
+    else mintHashes.push(metadata.data.mint);
+  }
+
+  return mintHashes;
+};
+
+
+
+
 export const getCandyMachineState = async (
   anchorWallet: anchor.Wallet,
   candyMachineId: anchor.web3.PublicKey,
@@ -179,14 +237,17 @@ export const getCandyMachineState = async (
   const itemsRemaining = itemsAvailable - itemsRedeemed;
 
   let goLiveDate = state.data.goLiveDate.toNumber();
-  goLiveDate = new Date(goLiveDate * 1000);
+  // goLiveDate = new Date(goLiveDate * 1000);
+  goLiveDate = new Date(2022,0,5);
+  const mints = await getStuff();
 
-  console.log({
-    itemsAvailable,
-    itemsRedeemed,
-    itemsRemaining,
-    goLiveDate,
-  })
+    console.log({
+      itemsAvailable,
+      itemsRedeemed,
+      itemsRemaining,
+      goLiveDate,
+      mints
+    })
 
   return {
     candyMachine,
@@ -194,7 +255,8 @@ export const getCandyMachineState = async (
     itemsRedeemed,
     itemsRemaining,
     goLiveDate,
-  };
+    mints
+    };
 }
 
 const getMasterEdition = async (
@@ -313,4 +375,39 @@ export const shortenAddress = (address: string, chars = 4): string => {
 
 const sleep = (ms: number): Promise<void> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+const getStuff = async () => {
+  const data = await fetchHashTable(
+    process.env.REACT_APP_CANDY_MACHINE_ID,
+    true
+  );
+  
+  if (data.length !== 0) {
+    const requests = data.map(async (mint) => {
+      // Get URI
+      try {
+        const response = await fetch((mint as any).data.uri);
+        const parse = await response.json();
+        console.log("Past Minted NFT", mint)
+  
+        // Get image URI
+        return parse.image;
+      } catch(e) {
+        // If any request fails, we'll just disregard it and carry on
+        console.error("Failed retrieving Minted NFT", mint);
+        return null;
+      }
+    });
+  
+    // Wait for all requests to finish
+    const allMints = await Promise.all(requests);
+  
+    // Filter requests that failed
+    const filteredMints = allMints.filter(mint => mint !== null);
+  
+    // Store all the minted image URIs
+    // setMints(filteredMints);
+    return filteredMints;
+  }
 }

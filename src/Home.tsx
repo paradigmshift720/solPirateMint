@@ -53,6 +53,11 @@ const Home = (props: HomeProps) => {
   });
 
   const [startDate, setStartDate] = useState(new Date(props.startDate));
+  
+  // State
+  const [machineStats, setMachineStats] = useState(null);
+  // New state property
+  const [mints, setMints] = useState([]);
 
   const wallet = useAnchorWallet();
   const [candyMachine, setCandyMachine] = useState<CandyMachine>();
@@ -67,6 +72,7 @@ const Home = (props: HomeProps) => {
         itemsAvailable,
         itemsRemaining,
         itemsRedeemed,
+        mints
       } = await getCandyMachineState(
         wallet as anchor.Wallet,
         props.candyMachineId,
@@ -80,6 +86,7 @@ const Home = (props: HomeProps) => {
       setIsSoldOut(itemsRemaining === 0);
       setStartDate(goLiveDate);
       setCandyMachine(candyMachine);
+      setMints(mints as any)
     })();
   };
 
@@ -102,7 +109,7 @@ const Home = (props: HomeProps) => {
           false
         );
 
-        if (!status?.err) {
+        if (!(status as any)?.err) {
           setAlertState({
             open: true,
             message: "Congratulations! Mint succeeded!",
@@ -165,6 +172,19 @@ const Home = (props: HomeProps) => {
     props.connection,
   ]);
 
+  const renderMintedItems = () => (
+    <div className="gif-container">
+      <p className="sub-text">Minted Items ✨</p>
+      <div className="gif-grid">
+        {mints.map((mint) => (
+          <div className="gif-item" key={mint}>
+            <img src={mint} alt={`Minted NFT ${mint}`} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <main>
       <div className="bg">
@@ -172,10 +192,49 @@ const Home = (props: HomeProps) => {
       {/* <embed name="GoodEnough" src="./assets/song.mp3" loop="false" autostart="true"></embed> */}
         <div className='frame'>
         <div className='mintContainer'>
-          <p>Mint opens January 5th 12 AM UTC</p>
-        
+        {wallet && (
+          <p>Wallet {shortenAddress(wallet.publicKey.toBase58() || "")}</p>
+        )}
+
+        {wallet && <p>Balance: {(balance || 0).toLocaleString()} SOL</p>}
+
+        {wallet && <p>Total Available: {itemsAvailable}</p>}
+
+        {wallet && <p>Redeemed: {itemsRedeemed}</p>}
+
+        {wallet && <p>Remaining: {itemsRemaining}</p>}
+
+        {wallet && <p>Mint Price: 0.35 SOL</p>}
+              {/* If we have mints available in our array, let's render some items */}
+      {renderMintedItems()}
         <MintContainer>
-          
+        {!wallet ? (
+            <ConnectButton className="connect-wallet-button">Connect Wallet</ConnectButton>
+          ) : (
+            <MintButton
+              className="mint-button"
+              disabled={isSoldOut || isMinting || !isActive}
+              onClick={onMint}
+              variant="contained"
+            >
+              {isSoldOut ? (
+                "SOLD OUT"
+              ) : isActive ? (
+                isMinting ? (
+                  <CircularProgress />
+                ) : (
+                  "MINT a SolPirate"
+                )
+              ) : (
+                <Countdown
+                  date={startDate}
+                  onMount={({ completed }) => completed && setIsActive(true)}
+                  onComplete={() => setIsActive(true)}
+                  renderer={renderCounter}
+                />
+              )}
+            </MintButton>
+          )}
         </MintContainer>
 
         <Snackbar
