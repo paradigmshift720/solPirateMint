@@ -172,7 +172,7 @@ const Home = (props: HomeProps) => {
       {/* <embed name="GoodEnough" src="./assets/song.mp3" loop="false" autostart="true"></embed> */}
         <div className='frame'>
         <div className='mintContainer'>
-          <p>Mint opens January 5th 12 AM UTC</p>
+          <p>Mint opens January 28th 12 AM UTC</p>
         
         <MintContainer>
           
