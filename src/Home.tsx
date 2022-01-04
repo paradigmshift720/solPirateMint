@@ -52,7 +52,7 @@ const Home = (props: HomeProps) => {
     severity: undefined,
   });
 
-  const [startDate, setStartDate] = useState(new Date(props.startDate));
+  const [startDate, setStartDate] = useState(new Date(2022, 0, 5));
 
   const wallet = useAnchorWallet();
   const [candyMachine, setCandyMachine] = useState<CandyMachine>();
@@ -172,10 +172,39 @@ const Home = (props: HomeProps) => {
       {/* <embed name="GoodEnough" src="./assets/song.mp3" loop="false" autostart="true"></embed> */}
         <div className='frame'>
         <div className='mintContainer'>
-          <p>Mint opens January 5th 12 AM UTC</p>
-        
+        {wallet && itemsRedeemed > 1000 && <div className="info-text">Total Available: {itemsAvailable}</div>}
+        {wallet && itemsRedeemed > 1000 && <div className="info-text">Redeemed: {itemsRedeemed}</div>}
+        {wallet && itemsRedeemed > 1000 && <div className="info-text">Remaining: {itemsRemaining}</div>}
+        <div className="info-text">Price: 0.35 SOL</div>
+        {wallet && <div className="info-text">Balance: {(balance || 0).toLocaleString()} SOL</div>}
         <MintContainer>
-          
+        {!wallet ? (
+            <ConnectButton className="connect-wallet-button">Connect Wallet</ConnectButton>
+          ) : (
+            <MintButton
+              className="mint-button"
+              disabled={isSoldOut || isMinting || !isActive}
+              onClick={onMint}
+              variant="contained"
+            >
+              {isSoldOut ? (
+                "SOLD OUT"
+              ) : isActive ? (
+                isMinting ? (
+                  <CircularProgress />
+                ) : (
+                  "MINT a SolPirate"
+                )
+              ) : (
+                <Countdown
+                  date={startDate}
+                  onMount={({ completed }) => completed && setIsActive(true)}
+                  onComplete={() => setIsActive(true)}
+                  renderer={renderCounter}
+                />
+              )}
+            </MintButton>
+          )}
         </MintContainer>
 
         <Snackbar
