@@ -175,11 +175,12 @@ const Home = (props: HomeProps) => {
         {wallet && itemsRedeemed > 1000 && <div className="info-text">Total Available: {itemsAvailable}</div>}
         {wallet && itemsRedeemed > 1000 && <div className="info-text">Redeemed: {itemsRedeemed}</div>}
         {wallet && itemsRedeemed > 1000 && <div className="info-text">Remaining: {itemsRemaining}</div>}
+        <div className="info-text">Sol Pirates Mint: Jan 28th</div>
         <div className="info-text">Price: 0.35 SOL</div>
         {wallet && <div className="info-text">Balance: {(balance || 0).toLocaleString()} SOL</div>}
-        <MintContainer>
+        {/* <MintContainer>
         {!wallet ? (
-            <ConnectButton className="connect-wallet-button">Connect Wallet</ConnectButton>
+            <ConnectButton className="connect-wallet-button" >Connect Wallet</ConnectButton>
           ) : (
             <MintButton
               className="mint-button"
@@ -205,7 +206,7 @@ const Home = (props: HomeProps) => {
               )}
             </MintButton>
           )}
-        </MintContainer>
+        </MintContainer> */}
 
         <Snackbar
           open={alertState.open}
