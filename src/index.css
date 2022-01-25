@@ -66,7 +66,7 @@ code {
 }
 
 .bg {
-  background-image: url("./assets/piratebg.png");
+  background-image: url("./assets/mintbanner.jpg");
   display: grid;
   grid-template-columns: 1fr 1fr;
   height: 100vh;
