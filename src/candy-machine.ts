@@ -179,7 +179,7 @@ export const getCandyMachineState = async (
   const itemsRemaining = itemsAvailable - itemsRedeemed;
 
   let goLiveDate = state.data.goLiveDate.toNumber();
-  goLiveDate = new Date(2022, 0, 28);
+  goLiveDate = new Date(1643328000000);
 
   console.log({
     itemsAvailable,

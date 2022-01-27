@@ -16,7 +16,6 @@ import {
   awaitTransactionSignatureConfirmation,
   getCandyMachineState,
   mintOneToken,
-  shortenAddress,
 } from "./candy-machine";
 
 const ConnectButton = styled(WalletDialogButton)``;
@@ -52,7 +51,7 @@ const Home = (props: HomeProps) => {
     severity: undefined,
   });
 
-  const [startDate, setStartDate] = useState(new Date(2022, 0, 5));
+  const [startDate, setStartDate] = useState(new Date(1643328000000));
 
   const wallet = useAnchorWallet();
   const [candyMachine, setCandyMachine] = useState<CandyMachine>();
@@ -168,8 +167,6 @@ const Home = (props: HomeProps) => {
   return (
     <main>
       <div className="bg">
-      {/* <audio src="./assets/song.mp3" autoPlay></audio> */}
-      {/* <embed name="GoodEnough" src="./assets/song.mp3" loop="false" autostart="true"></embed> */}
         <div className='frame'>
         <div className='mintContainer'>
         {wallet && itemsRedeemed > 1000 && <div className="info-text">Total Available: {itemsAvailable}</div>}
@@ -178,7 +175,7 @@ const Home = (props: HomeProps) => {
         <div className="info-text">Sol Pirates Mint: Jan 28th</div>
         <div className="info-text">Price: 0.35 SOL</div>
         {wallet && <div className="info-text">Balance: {(balance || 0).toLocaleString()} SOL</div>}
-        {/* <MintContainer>
+        {<MintContainer>
         {!wallet ? (
             <ConnectButton className="connect-wallet-button" >Connect Wallet</ConnectButton>
           ) : (
@@ -206,7 +203,7 @@ const Home = (props: HomeProps) => {
               )}
             </MintButton>
           )}
-        </MintContainer> */}
+        </MintContainer>}
 
         <Snackbar
           open={alertState.open}
